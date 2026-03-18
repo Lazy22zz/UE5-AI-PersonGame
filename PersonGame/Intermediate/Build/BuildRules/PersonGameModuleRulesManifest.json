@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\UE5-AI-PersonGame\\PersonGame\\Source\\PersonGame\\PersonGame.Build.cs",
+		"D:\\UE5-AI-PersonGame\\PersonGame\\Source\\PersonGame.Target.cs",
+		"D:\\UE5-AI-PersonGame\\PersonGame\\Source\\PersonGameEditor.Target.cs"
+	],
+	"EngineVersion": "5.4.4"
+}
