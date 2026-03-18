@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// GeoSiege - Player Character
 
 #pragma once
 
@@ -14,21 +14,50 @@ class APersonGameCharacter : public ACharacter
 public:
 	APersonGameCharacter();
 
-	// Called every frame.
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	/** Returns TopDownCameraComponent subobject **/
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+		AController* EventInstigator, AActor* DamageCauser) override;
+
+	// --- Camera ---
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
-	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	// --- Health ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	float CurrentHealth;
+
+	// --- Shooting ---
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float FireRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	TSubclassOf<class AProjectile> ProjectileClass;
+
+	bool IsAlive() const { return CurrentHealth > 0.f && !bDead; }
+
 private:
-	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
 
-	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
-};
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* BodyMesh;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* DynBodyMat;
+
+	float FireTimer;
+	float DamageFlashTimer;
+	bool bDead;
+
+	void ShootAtNearestEnemy();
+	void Die();
+	void SetupBodyMesh();
+};
