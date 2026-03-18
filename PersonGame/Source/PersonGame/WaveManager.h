@@ -60,7 +60,6 @@ private:
 
 	void StartNextWave();
 	void SpawnEnemyAt(FVector Location, EEnemyType Type, float SpeedMult);
-	void BuildArenaWalls();
 
 	EEnemyType GetEnemyTypeForWave() const;
 	float GetSpeedMultiplierForWave() const;

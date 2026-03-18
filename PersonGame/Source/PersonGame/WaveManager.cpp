@@ -2,18 +2,15 @@
 
 #include "WaveManager.h"
 #include "Engine/World.h"
-#include "Engine/StaticMeshActor.h"
 #include "Kismet/GameplayStatics.h"
-#include "Components/StaticMeshComponent.h"
-#include "Materials/MaterialInstanceDynamic.h"
-#include "UObject/ConstructorHelpers.h"
 #include "Math/UnrealMathUtility.h"
 
 AWaveManager::AWaveManager()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ArenaRadius = 2000.f;
+	// ArenaRadius defines the safe inner spawn zone (must fit inside map walls)
+	ArenaRadius = 800.f;
 	CurrentWave = 0;
 	Score = 0;
 	bGameOver = false;
@@ -29,7 +26,7 @@ AWaveManager::AWaveManager()
 void AWaveManager::BeginPlay()
 {
 	Super::BeginPlay();
-	BuildArenaWalls();
+	// No wall building — the map already has its own walls
 	bGameStarted = true;
 }
 
@@ -72,15 +69,37 @@ void AWaveManager::StartNextWave()
 	EnemiesThisWave = Count;
 	EnemiesAlive = Count;
 
+	// Get current player location so we can maintain a safe distance
+	FVector PlayerLoc = FVector::ZeroVector;
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC && PC->GetPawn())
+	{
+		PlayerLoc = PC->GetPawn()->GetActorLocation();
+	}
+
+	const float MinPlayerDist = 450.f;   // don't spawn too close to player
+	const float MaxRadius     = ArenaRadius * 0.9f; // stay well inside map walls
+
 	for (int32 i = 0; i < Count; i++)
 	{
-		float Angle = (float)i / (float)Count * 2.f * PI;
-		float Jitter = FMath::RandRange(-300.f, 300.f);
-		FVector SpawnPos(
-			FMath::Sin(Angle) * (ArenaRadius - 150.f) + FMath::RandRange(-100.f, 100.f),
-			FMath::Cos(Angle) * (ArenaRadius - 150.f) + Jitter,
-			80.f
-		);
+		FVector SpawnPos;
+		int32 Attempts = 0;
+
+		// Retry until we find a spot that is inside the arena AND far enough from the player
+		do
+		{
+			float Angle  = FMath::RandRange(0.f, 2.f * PI);
+			float Radius = FMath::RandRange(MinPlayerDist, MaxRadius);
+
+			SpawnPos = FVector(
+				FMath::Sin(Angle) * Radius,
+				FMath::Cos(Angle) * Radius,
+				80.f
+			);
+			Attempts++;
+		}
+		while (FVector::Dist2D(SpawnPos, PlayerLoc) < MinPlayerDist && Attempts < 20);
+
 		SpawnEnemyAt(SpawnPos, Type, SpeedMult);
 	}
 }
@@ -114,53 +133,6 @@ void AWaveManager::OnEnemyKilled(int32 ScoreValue)
 void AWaveManager::TriggerGameOver()
 {
 	bGameOver = true;
-}
-
-void AWaveManager::BuildArenaWalls()
-{
-	UStaticMesh* CubeMesh = Cast<UStaticMesh>(StaticLoadObject(
-		UStaticMesh::StaticClass(), nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
-
-	UMaterialInterface* BaseMat = Cast<UMaterialInterface>(StaticLoadObject(
-		UMaterialInterface::StaticClass(), nullptr,
-		TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial")));
-
-	if (!CubeMesh) return;
-
-	const float R = ArenaRadius;
-	const float WallH = 180.f;
-	const float WallT = 80.f;
-	const float WallZ = WallH * 0.5f;
-	const float WallLen = R * 2.f + WallT * 2.f;
-
-	struct FWallData { FVector Loc; FVector Scale; };
-	TArray<FWallData> Walls = {
-		{ FVector(0.f,  R + WallT * 0.5f, WallZ), FVector(WallLen / 100.f, WallT / 100.f, WallH / 100.f) },
-		{ FVector(0.f, -R - WallT * 0.5f, WallZ), FVector(WallLen / 100.f, WallT / 100.f, WallH / 100.f) },
-		{ FVector( R + WallT * 0.5f, 0.f, WallZ), FVector(WallT / 100.f, WallLen / 100.f, WallH / 100.f) },
-		{ FVector(-R - WallT * 0.5f, 0.f, WallZ), FVector(WallT / 100.f, WallLen / 100.f, WallH / 100.f) },
-	};
-
-	for (const FWallData& W : Walls)
-	{
-		FActorSpawnParameters Params;
-		AStaticMeshActor* WallActor = GetWorld()->SpawnActor<AStaticMeshActor>(
-			AStaticMeshActor::StaticClass(), W.Loc, FRotator::ZeroRotator, Params);
-
-		if (!WallActor) continue;
-
-		UStaticMeshComponent* SMC = WallActor->GetStaticMeshComponent();
-		SMC->SetMobility(EComponentMobility::Movable);
-		SMC->SetStaticMesh(CubeMesh);
-		WallActor->SetActorScale3D(W.Scale);
-
-		if (BaseMat)
-		{
-			UMaterialInstanceDynamic* DynMat = UMaterialInstanceDynamic::Create(BaseMat, WallActor);
-			DynMat->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.02f, 0.04f, 0.18f));
-			SMC->SetMaterial(0, DynMat);
-		}
-	}
 }
 
 EEnemyType AWaveManager::GetEnemyTypeForWave() const
