@@ -91,11 +91,11 @@ void AWaveManager::StartNextWave()
 			float Angle  = FMath::RandRange(0.f, 2.f * PI);
 			float Radius = FMath::RandRange(MinPlayerDist, MaxRadius);
 
-			// Offset FROM the player's actual position, not from world origin
+			// Offset FROM the player's actual position, same Z as the player
 			SpawnPos = FVector(
 				PlayerLoc.X + FMath::Sin(Angle) * Radius,
 				PlayerLoc.Y + FMath::Cos(Angle) * Radius,
-				PlayerLoc.Z + 80.f
+				PlayerLoc.Z        // same height as player — no offset
 			);
 			Attempts++;
 		}

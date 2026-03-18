@@ -27,10 +27,10 @@ AEnemyCharacter::AEnemyCharacter()
 	GetMesh()->SetHiddenInGame(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// Visual body mesh
+	// Visual body mesh — centred on the capsule so it aligns with the collision volume
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
 	BodyMesh->SetupAttachment(GetCapsuleComponent());
-	BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
+	BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	BodyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Default stats
@@ -116,6 +116,9 @@ void AEnemyCharacter::SetupEnemy(EEnemyType Type, float SpeedMultiplier)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 	}
+
+	// Re-apply visuals now that EnemyType / capsule size are final
+	ApplyEnemyVisuals();
 }
 
 float AEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,

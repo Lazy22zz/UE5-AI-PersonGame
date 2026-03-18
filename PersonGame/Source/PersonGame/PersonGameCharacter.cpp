@@ -41,10 +41,10 @@ APersonGameCharacter::APersonGameCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false;
 
-	// Visual body — blue sphere
+	// Visual body — blue sphere, centred on the capsule
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
 	BodyMesh->SetupAttachment(GetCapsuleComponent());
-	BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -40.f));
+	BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	BodyMesh->SetRelativeScale3D(FVector(0.9f));
 	BodyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
@@ -194,7 +194,8 @@ void APersonGameCharacter::FireProjectileToward(FVector Dir)
 	if (Dir.IsNearlyZero()) return;
 	Dir.Normalize();
 
-	FVector Origin   = GetActorLocation() + FVector(0.f, 0.f, 20.f);
+	// Spawn at the capsule centre (same Z as enemies) so the bullet travels through them
+	FVector Origin   = GetActorLocation();
 	FVector SpawnLoc = Origin + Dir * 65.f;
 
 	FActorSpawnParameters SpawnParams;
