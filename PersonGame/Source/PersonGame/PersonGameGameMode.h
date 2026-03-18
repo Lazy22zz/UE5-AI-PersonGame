@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// GeoSiege - Game Mode
 
 #pragma once
 
@@ -13,7 +13,6 @@ class APersonGameGameMode : public AGameModeBase
 
 public:
 	APersonGameGameMode();
+
+	virtual void BeginPlay() override;
 };
-
-
-
