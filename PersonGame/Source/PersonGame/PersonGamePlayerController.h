@@ -36,6 +36,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationTouchAction;
 
+	/** World-space position the player is currently aiming at (mouse cursor or last touch point). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aim")
+	FVector AimWorldLocation;
+
+	/** True when AimWorldLocation has been set at least once this session. */
+	bool bHasValidAim;
+
 protected:
 	uint32 bMoveToMouseCursor : 1;
 

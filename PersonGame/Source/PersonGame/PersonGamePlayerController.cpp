@@ -21,8 +21,10 @@ APersonGamePlayerController::APersonGamePlayerController()
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
-	FollowTime = 0.f;
-	bRestartPending = false;
+	AimWorldLocation  = FVector::ZeroVector;
+	FollowTime        = 0.f;
+	bRestartPending   = false;
+	bHasValidAim      = false;
 }
 
 void APersonGamePlayerController::BeginPlay()
@@ -34,7 +36,7 @@ void APersonGamePlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// --- Game Over: restart on Enter/Space or any touch ---
+	// --- Game Over: restart on Enter / Space / touch ---
 	AWaveManager* WM = AWaveManager::GetInstance(GetWorld());
 	if (WM && WM->bGameOver)
 	{
@@ -48,6 +50,16 @@ void APersonGamePlayerController::Tick(float DeltaTime)
 			}
 		}
 		return;
+	}
+
+	// --- Update AimWorldLocation from mouse cursor (PC) every frame ---
+	{
+		FHitResult AimHit;
+		if (GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, AimHit))
+		{
+			AimWorldLocation = AimHit.Location;
+			bHasValidAim     = true;
+		}
 	}
 
 	// --- WASD keyboard movement ---
@@ -71,21 +83,28 @@ void APersonGamePlayerController::Tick(float DeltaTime)
 			ControlledPawn->AddMovementInput(MoveDir.GetSafeNormal(), 1.0f);
 		}
 
-		// Touch fallback — works even without Blueprint input actions
+		// Touch fallback: move toward touch point AND update AimWorldLocation
 		float TouchX = 0.f, TouchY = 0.f;
 		bool bTouchActive = false;
 		GetInputTouchState(ETouchIndex::Touch1, TouchX, TouchY, bTouchActive);
-		if (bTouchActive && MoveDir.IsNearlyZero())
+		if (bTouchActive)
 		{
 			FHitResult TouchHit;
 			if (GetHitResultAtScreenPosition(FVector2D(TouchX, TouchY),
 				ECollisionChannel::ECC_Visibility, true, TouchHit))
 			{
-				FVector TouchDir = (TouchHit.Location - ControlledPawn->GetActorLocation());
-				TouchDir.Z = 0.f;
-				if (!TouchDir.IsNearlyZero(20.f))
+				// Touch destination becomes both move target and aim target
+				AimWorldLocation = TouchHit.Location;
+				bHasValidAim     = true;
+
+				if (MoveDir.IsNearlyZero())
 				{
-					ControlledPawn->AddMovementInput(TouchDir.GetSafeNormal(), 1.0f);
+					FVector TouchDir = TouchHit.Location - ControlledPawn->GetActorLocation();
+					TouchDir.Z = 0.f;
+					if (!TouchDir.IsNearlyZero(20.f))
+					{
+						ControlledPawn->AddMovementInput(TouchDir.GetSafeNormal(), 1.0f);
+					}
 				}
 			}
 		}
@@ -131,15 +150,6 @@ void APersonGamePlayerController::SetupInputComponent()
 				&APersonGamePlayerController::OnTouchReleased);
 		}
 	}
-
-	// Fallback legacy bindings for mouse/touch when no Enhanced Input mapping exists
-	if (InputComponent && !SetDestinationClickAction)
-	{
-		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this,
-			&APersonGamePlayerController::OnInputStarted);
-		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Released, this,
-			&APersonGamePlayerController::OnSetDestinationReleased);
-	}
 }
 
 void APersonGamePlayerController::OnInputStarted()
@@ -179,6 +189,9 @@ void APersonGamePlayerController::OnSetDestinationTriggered()
 	if (bHitSuccessful)
 	{
 		CachedDestination = Hit.Location;
+		// Keep aim in sync with where the player clicked/touched
+		AimWorldLocation  = Hit.Location;
+		bHasValidAim      = true;
 	}
 
 	APawn* ControlledPawn = GetPawn();

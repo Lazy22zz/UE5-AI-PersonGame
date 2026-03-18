@@ -1,6 +1,7 @@
 // GeoSiege - Player Character
 
 #include "PersonGameCharacter.h"
+#include "PersonGamePlayerController.h"
 #include "Projectile.h"
 #include "EnemyCharacter.h"
 #include "WaveManager.h"
@@ -104,7 +105,7 @@ void APersonGameCharacter::Tick(float DeltaSeconds)
 	FireTimer += DeltaSeconds;
 	if (FireTimer >= 1.0f / FMath::Max(FireRate, 0.1f))
 	{
-		ShootAtNearestEnemy();
+		TryShoot();
 		FireTimer = 0.f;
 	}
 
@@ -163,10 +164,57 @@ void APersonGameCharacter::Die()
 	BodyMesh->SetRelativeScale3D(FVector(0.1f));
 }
 
-void APersonGameCharacter::ShootAtNearestEnemy()
+void APersonGameCharacter::TryShoot()
 {
 	if (!ProjectileClass) return;
 
+	// --- Priority 1: Use controller aim (mouse cursor on PC, touch point on mobile) ---
+	APersonGamePlayerController* PC = Cast<APersonGamePlayerController>(GetController());
+	if (PC && PC->bHasValidAim)
+	{
+		FVector AimFlat = PC->AimWorldLocation;
+		AimFlat.Z = GetActorLocation().Z; // flatten to same plane
+		FVector Dir = (AimFlat - GetActorLocation());
+		if (Dir.SizeSquared2D() > 100.f * 100.f) // must be at least 100 units away
+		{
+			Dir.Z = 0.f;
+			Dir.Normalize();
+			FireProjectileToward(Dir);
+			return;
+		}
+	}
+
+	// --- Priority 2: Auto-aim at nearest enemy (fallback when no cursor aim) ---
+	ShootAtNearestEnemy();
+}
+
+void APersonGameCharacter::FireProjectileToward(FVector Dir)
+{
+	Dir.Z = 0.f;
+	if (Dir.IsNearlyZero()) return;
+	Dir.Normalize();
+
+	FVector Origin   = GetActorLocation() + FVector(0.f, 0.f, 20.f);
+	FVector SpawnLoc = Origin + Dir * 65.f;
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner      = this;
+	SpawnParams.Instigator = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AProjectile* Proj = GetWorld()->SpawnActor<AProjectile>(
+		ProjectileClass, SpawnLoc, Dir.Rotation(), SpawnParams);
+	if (Proj)
+	{
+		Proj->Launch(Dir);
+	}
+
+	// Rotate character to face shoot direction
+	SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
+}
+
+void APersonGameCharacter::ShootAtNearestEnemy()
+{
 	TArray<AActor*> AllEnemies;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyCharacter::StaticClass(), AllEnemies);
 
@@ -189,25 +237,6 @@ void APersonGameCharacter::ShootAtNearestEnemy()
 
 	if (!Target) return;
 
-	FVector Origin = GetActorLocation() + FVector(0.f, 0.f, 20.f);
-	FVector Dir = (Target->GetActorLocation() - Origin).GetSafeNormal();
-	Dir.Z = 0.f;
-	Dir.Normalize();
-
-	FVector SpawnLoc = Origin + Dir * 65.f;
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	AProjectile* Proj = GetWorld()->SpawnActor<AProjectile>(
-		ProjectileClass, SpawnLoc, Dir.Rotation(), SpawnParams);
-	if (Proj)
-	{
-		Proj->Launch(Dir);
-	}
-
-	// Face the target
-	SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
+	FVector Dir = (Target->GetActorLocation() - GetActorLocation());
+	FireProjectileToward(Dir);
 }

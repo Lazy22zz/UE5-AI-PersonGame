@@ -40,6 +40,9 @@ public:
 
 	bool IsAlive() const { return CurrentHealth > 0.f && !bDead; }
 
+	/** Called externally or by Tick to fire one shot. */
+	void TryShoot();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;
@@ -57,6 +60,7 @@ private:
 	float DamageFlashTimer;
 	bool bDead;
 
+	void FireProjectileToward(FVector WorldTarget);
 	void ShootAtNearestEnemy();
 	void Die();
 	void SetupBodyMesh();
