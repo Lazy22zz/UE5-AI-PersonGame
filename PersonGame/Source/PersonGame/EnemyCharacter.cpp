@@ -9,6 +9,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "Engine/DamageEvents.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -149,37 +150,37 @@ void AEnemyCharacter::Die()
 
 void AEnemyCharacter::ApplyEnemyVisuals()
 {
-	UStaticMesh* Mesh = nullptr;
+	UStaticMesh* MeshAsset = nullptr;
 	FLinearColor Color;
 	FVector MeshScale;
 
 	switch (EnemyType)
 	{
 	case EEnemyType::Small:
-		Mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
+		MeshAsset = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
 			TEXT("/Engine/BasicShapes/Cube.Cube")));
 		Color = FLinearColor(1.f, 0.08f, 0.08f);
 		MeshScale = FVector(0.55f, 0.55f, 0.55f);
 		break;
 
 	case EEnemyType::Medium:
-		Mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
+		MeshAsset = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
 			TEXT("/Engine/BasicShapes/Cylinder.Cylinder")));
 		Color = FLinearColor(1.f, 0.45f, 0.0f);
 		MeshScale = FVector(0.8f, 0.8f, 0.8f);
 		break;
 
 	case EEnemyType::Large:
-		Mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
+		MeshAsset = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr,
 			TEXT("/Engine/BasicShapes/Sphere.Sphere")));
 		Color = FLinearColor(0.6f, 0.0f, 1.0f);
 		MeshScale = FVector(1.1f, 1.1f, 1.1f);
 		break;
 	}
 
-	if (Mesh)
+	if (MeshAsset)
 	{
-		BodyMesh->SetStaticMesh(Mesh);
+		BodyMesh->SetStaticMesh(MeshAsset);
 		BodyMesh->SetRelativeScale3D(MeshScale);
 	}
 
