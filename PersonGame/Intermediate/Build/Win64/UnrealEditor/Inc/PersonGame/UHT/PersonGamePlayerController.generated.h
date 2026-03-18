@@ -14,7 +14,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define PERSONGAME_PersonGamePlayerController_generated_h
 
-#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_20_INCLASS_NO_PURE_DECLS \
+#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_19_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAPersonGamePlayerController(); \
 	friend struct Z_Construct_UClass_APersonGamePlayerController_Statics; \
@@ -23,7 +23,7 @@ public: \
 	DECLARE_SERIALIZER(APersonGamePlayerController)
 
 
-#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_20_ENHANCED_CONSTRUCTORS \
+#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_19_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	APersonGamePlayerController(APersonGamePlayerController&&); \
@@ -35,12 +35,12 @@ public: \
 	NO_API virtual ~APersonGamePlayerController();
 
 
-#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_17_PROLOG
-#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_20_GENERATED_BODY \
+#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_16_PROLOG
+#define FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_19_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_20_INCLASS_NO_PURE_DECLS \
-	FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_20_ENHANCED_CONSTRUCTORS \
+	FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_19_INCLASS_NO_PURE_DECLS \
+	FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_19_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

@@ -11,6 +11,7 @@
     <None Include="..\..\Source\PersonGameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
@@ -32,6 +33,12 @@
     <Filter Include="Source\PersonGame">
       <UniqueIdentifier>{14124DC7-FBA5-3B0D-9634-55CD012CA377}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\PersonGame\EnemyCharacter.cpp">
+      <Filter>Source\PersonGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PersonGame\EnemyCharacter.h">
+      <Filter>Source\PersonGame</Filter>
+    </ClInclude>
     <None Include="..\..\Source\PersonGame\PersonGame.Build.cs">
       <Filter>Source\PersonGame</Filter>
     </None>
@@ -57,6 +64,24 @@
       <Filter>Source\PersonGame</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\PersonGame\PersonGamePlayerController.h">
+      <Filter>Source\PersonGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PersonGame\Projectile.cpp">
+      <Filter>Source\PersonGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PersonGame\Projectile.h">
+      <Filter>Source\PersonGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PersonGame\TopDownHUD.cpp">
+      <Filter>Source\PersonGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PersonGame\TopDownHUD.h">
+      <Filter>Source\PersonGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\PersonGame\WaveManager.cpp">
+      <Filter>Source\PersonGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\PersonGame\WaveManager.h">
       <Filter>Source\PersonGame</Filter>
     </ClInclude>
   </ItemGroup>

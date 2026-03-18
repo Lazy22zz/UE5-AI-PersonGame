@@ -10,7 +10,7 @@ AWaveManager::AWaveManager()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// ArenaRadius defines the safe inner spawn zone (must fit inside map walls)
-	ArenaRadius = 800.f;
+	ArenaRadius = 40.f;
 	CurrentWave = 0;
 	Score = 0;
 	bGameOver = false;

@@ -38,56 +38,26 @@ struct Z_Construct_UClass_APersonGamePlayerController_Statics
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ShortPressThreshold_MetaData[] = {
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Time Threshold to know if it was a short press */" },
-#endif
 		{ "ModuleRelativePath", "PersonGamePlayerController.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Time Threshold to know if it was a short press" },
-#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_FXCursor_MetaData[] = {
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** FX Class that we will spawn when clicking */" },
-#endif
 		{ "ModuleRelativePath", "PersonGamePlayerController.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "FX Class that we will spawn when clicking" },
-#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_DefaultMappingContext_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** MappingContext */" },
-#endif
 		{ "ModuleRelativePath", "PersonGamePlayerController.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "MappingContext" },
-#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SetDestinationClickAction_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Jump Input Action */" },
-#endif
 		{ "ModuleRelativePath", "PersonGamePlayerController.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Jump Input Action" },
-#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SetDestinationTouchAction_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Jump Input Action */" },
-#endif
 		{ "ModuleRelativePath", "PersonGamePlayerController.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Jump Input Action" },
-#endif
 	};
 #endif // WITH_METADATA
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_ShortPressThreshold;
@@ -155,10 +125,10 @@ APersonGamePlayerController::~APersonGamePlayerController() {}
 struct Z_CompiledInDeferFile_FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_APersonGamePlayerController, APersonGamePlayerController::StaticClass, TEXT("APersonGamePlayerController"), &Z_Registration_Info_UClass_APersonGamePlayerController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APersonGamePlayerController), 201329189U) },
+		{ Z_Construct_UClass_APersonGamePlayerController, APersonGamePlayerController::StaticClass, TEXT("APersonGamePlayerController"), &Z_Registration_Info_UClass_APersonGamePlayerController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APersonGamePlayerController), 828825044U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_1794734912(TEXT("/Script/PersonGame"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_3202389896(TEXT("/Script/PersonGame"),
 	Z_CompiledInDeferFile_FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_PersonGame_Source_PersonGame_PersonGamePlayerController_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);
